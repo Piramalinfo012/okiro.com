@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo, useCallback, useRef } from 'react';
-import { ArrowLeft, ArrowRight } from 'lucide-react';
+import { ArrowLeft, ArrowRight, ChevronDown } from 'lucide-react';
 import gsap from 'gsap';
 
 // 4 Food Items with exact palette and transparent PNG cutouts
@@ -14,31 +14,31 @@ const FOOD_IMAGES = [
       'The artwork is stunning, shipped fully prepared. The finish is a vision, the culinary craft is flawless. Many thanks! Wishing you the win. Order now.',
   },
   {
-    src: '/images/food/2.avocado.png',
-    bg: '#6BBF7A',
-    panel: '#85CC92',
-    title: 'HASS AVOCADO TARTINE',
-    ghostText: 'ORGANIC',
+    src: '/images/food/2.dal.png',
+    bg: '#54825C',
+    panel: '#6D9E75',
+    title: 'ARTISANAL DAL TADKA',
+    ghostText: 'HERITAGE',
     description:
-      'The artwork is stunning, shipped fully prepared. The finish is a vision, the culinary craft is flawless. Many thanks! Wishing you the win. Order now.',
+      'Aromatic red and yellow lentils simmered in rustic earthen clay with golden cumin tadka, fresh cilantro, and warm spices. Order now.',
   },
   {
-    src: '/images/food/3.donut.png',
-    bg: '#E882B4',
-    panel: '#ED9DC4',
-    title: 'STRAWBERRY CRUFIN',
-    ghostText: 'PATISSERIE',
+    src: '/images/food/3.coffee.png',
+    bg: '#B27D56',
+    panel: '#8F5E3B',
+    title: 'SIGNATURE FLAT WHITE',
+    ghostText: 'ROASTERY',
     description:
-      'The artwork is stunning, shipped fully prepared. The finish is a vision, the culinary craft is flawless. Many thanks! Wishing you the win. Order now.',
+      'Masterfully pulled double espresso blended with micro-textured silky milk, delicate latte art, and single-origin roasted beans. Order now.',
   },
   {
     src: '/images/food/4.pizza.png',
-    bg: '#6EB5FF',
-    panel: '#8DC4FF',
-    title: 'WOODFIRED SOURDOUGH',
+    bg: '#547285',
+    panel: '#3C5463',
+    title: 'NEAPOLITAN WOODFIRED',
     ghostText: 'GOURMET',
     description:
-      'The artwork is stunning, shipped fully prepared. The finish is a vision, the culinary craft is flawless. Many thanks! Wishing you the win. Order now.',
+      'Hand-stretched cold-fermented sourdough baked at 900°F with blistered crust, sweet San Marzano tomatoes, buffalo mozzarella, and fresh garden basil. Order now.',
   },
 ];
 
@@ -103,6 +103,12 @@ export const ToonhubFoodHero: React.FC<ToonhubFoodHeroProps> = ({
     typeof window !== 'undefined' ? window.innerWidth < 640 : false
   );
 
+  const activeIndexRef = useRef(activeIndex);
+  activeIndexRef.current = activeIndex;
+
+  const isAnimatingRef = useRef(isAnimating);
+  isAnimatingRef.current = isAnimating;
+
   // GSAP animation refs
   const containerRef = useRef<HTMLDivElement>(null);
   const bgOverlayRef = useRef<HTMLDivElement>(null);
@@ -139,12 +145,29 @@ export const ToonhubFoodHero: React.FC<ToonhubFoodHeroProps> = ({
         );
       }
 
-      // 3. Subtle Ghost Watermark text crossfade
+      // 3. Crisp 3D Watermark text entrance with spatial depth & perspective
       if (ghostTextRef.current) {
         gsap.fromTo(
           ghostTextRef.current,
-          { opacity: 0, y: 12, filter: 'blur(2px)' },
-          { opacity: isMobile ? 0.16 : 0.22, y: 0, filter: 'blur(0px)', duration: 0.7, ease: 'power2.out', overwrite: 'auto' }
+          {
+            opacity: 0,
+            y: 28,
+            rotationX: 28,
+            z: -70,
+            scale: 0.94,
+            filter: 'blur(4px)',
+          },
+          {
+            opacity: isMobile ? 0.9 : 0.95,
+            y: 0,
+            rotationX: 0,
+            z: 0,
+            scale: 1,
+            filter: 'blur(0px)',
+            duration: 0.75,
+            ease: 'power3.out',
+            overwrite: 'auto',
+          }
         );
       }
 
@@ -198,10 +221,10 @@ export const ToonhubFoodHero: React.FC<ToonhubFoodHeroProps> = ({
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  // Carousel navigation logic with 650ms lock
+  // Carousel navigation logic with 600ms lock
   const navigate = useCallback(
     (direction: 'next' | 'prev') => {
-      if (isAnimating) return;
+      if (isAnimatingRef.current) return;
       setIsAnimating(true);
       if (direction === 'next') {
         setActiveIndex((prev) => (prev + 1) % 4);
@@ -210,9 +233,9 @@ export const ToonhubFoodHero: React.FC<ToonhubFoodHeroProps> = ({
       }
       setTimeout(() => {
         setIsAnimating(false);
-      }, 650);
+      }, 600);
     },
-    [isAnimating]
+    []
   );
 
   // Keyboard navigation support
@@ -223,6 +246,141 @@ export const ToonhubFoodHero: React.FC<ToonhubFoodHeroProps> = ({
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [navigate]);
+
+  // Pinned Wheel Scroll Navigation:
+  // Intercept scroll down so all 4 images (01, 02, 03, 04) are revealed first!
+  // Only after reaching the 4th item (slide index 3), subsequent downward scroll continues down the page.
+  useEffect(() => {
+    let lastScrollTime = 0;
+
+    const handleWheel = (e: WheelEvent) => {
+      // If user has already scrolled down past the hero, allow normal scrolling everywhere
+      if (window.scrollY > 20) return;
+
+      const delta = Math.abs(e.deltaY) >= Math.abs(e.deltaX) ? e.deltaY : e.deltaX;
+      if (Math.abs(delta) < 15) return;
+
+      const now = Date.now();
+
+      if (delta > 0) {
+        // User scrolling DOWN
+        if (activeIndexRef.current < 3) {
+          // Prevent window scroll until all 4 images have been shown!
+          e.preventDefault();
+
+          if (now - lastScrollTime >= 550 && !isAnimatingRef.current) {
+            lastScrollTime = now;
+            setIsAnimating(true);
+            setActiveIndex((prev) => Math.min(prev + 1, 3));
+            setTimeout(() => {
+              setIsAnimating(false);
+            }, 600);
+          }
+        } else {
+          // activeIndex === 3 (Last dish revealed!):
+          // DO NOT call e.preventDefault() -> Page smoothly scrolls down to the rest of the site!
+        }
+      } else if (delta < 0) {
+        // User scrolling UP while at top of page
+        if (window.scrollY <= 10 && activeIndexRef.current > 0) {
+          e.preventDefault();
+
+          if (now - lastScrollTime >= 550 && !isAnimatingRef.current) {
+            lastScrollTime = now;
+            setIsAnimating(true);
+            setActiveIndex((prev) => Math.max(prev - 1, 0));
+            setTimeout(() => {
+              setIsAnimating(false);
+            }, 600);
+          }
+        }
+      }
+    };
+
+    window.addEventListener('wheel', handleWheel, { passive: false });
+    return () => window.removeEventListener('wheel', handleWheel);
+  }, []);
+
+  // Touch swipe gesture support on mobile with pinned scroll behavior
+  useEffect(() => {
+    const el = containerRef.current;
+    if (!el) return;
+
+    let touchStartX = 0;
+    let touchStartY = 0;
+    let lastTouchTime = 0;
+
+    const handleTouchStart = (e: TouchEvent) => {
+      touchStartX = e.touches[0].clientX;
+      touchStartY = e.touches[0].clientY;
+    };
+
+    const handleTouchMove = (e: TouchEvent) => {
+      if (window.scrollY > 20) return;
+      const currentY = e.touches[0].clientY;
+      const currentX = e.touches[0].clientX;
+      const diffY = touchStartY - currentY; // positive = swipe up = scroll down
+      const diffX = touchStartX - currentX;
+
+      // When vertical swipe is dominant and not all items shown, prevent page scroll
+      if (Math.abs(diffY) > Math.abs(diffX) && Math.abs(diffY) > 8) {
+        if (diffY > 0 && activeIndexRef.current < 3) {
+          if (e.cancelable) e.preventDefault();
+        } else if (diffY < 0 && activeIndexRef.current > 0 && window.scrollY <= 5) {
+          if (e.cancelable) e.preventDefault();
+        }
+      }
+    };
+
+    const handleTouchEnd = (e: TouchEvent) => {
+      if (window.scrollY > 20) return;
+      const touchEndX = e.changedTouches[0].clientX;
+      const touchEndY = e.changedTouches[0].clientY;
+      const diffX = touchEndX - touchStartX;
+      const diffY = touchEndY - touchStartY;
+      const now = Date.now();
+
+      if (now - lastTouchTime < 450 || isAnimatingRef.current) return;
+
+      // Vertical swipe: swipe up advances down until slide 3
+      if (Math.abs(diffY) > Math.abs(diffX) && Math.abs(diffY) > 35) {
+        if (diffY > 35) {
+          // Swiping up = scrolling down
+          if (activeIndexRef.current < 3) {
+            lastTouchTime = now;
+            setIsAnimating(true);
+            setActiveIndex((prev) => Math.min(prev + 1, 3));
+            setTimeout(() => setIsAnimating(false), 600);
+          }
+        } else if (diffY < -35) {
+          // Swiping down = scrolling up
+          if (activeIndexRef.current > 0) {
+            lastTouchTime = now;
+            setIsAnimating(true);
+            setActiveIndex((prev) => Math.max(prev - 1, 0));
+            setTimeout(() => setIsAnimating(false), 600);
+          }
+        }
+      } else if (Math.abs(diffX) > 40) {
+        // Horizontal swipe always allows navigation
+        lastTouchTime = now;
+        if (diffX < 0) {
+          navigate('next');
+        } else {
+          navigate('prev');
+        }
+      }
+    };
+
+    el.addEventListener('touchstart', handleTouchStart, { passive: true });
+    el.addEventListener('touchmove', handleTouchMove, { passive: false });
+    el.addEventListener('touchend', handleTouchEnd, { passive: true });
+    return () => {
+      el.removeEventListener('touchstart', handleTouchStart);
+      el.removeEventListener('touchmove', handleTouchMove);
+      el.removeEventListener('touchend', handleTouchEnd);
+    };
   }, [navigate]);
 
   // Roles derived from activeIndex
@@ -395,33 +553,43 @@ export const ToonhubFoodHero: React.FC<ToonhubFoodHeroProps> = ({
           }}
         />
 
-        {/* 2. Giant ghost watermark using Cormorant Garamond serif - elevated on mobile to avoid overlapping character head */}
+        {/* 2. Hero Background Editorial 3D Watermark ("CRAFT FOOD", "ORGANIC", etc.) */}
         <div
-          className="absolute inset-x-0 flex items-center justify-center pointer-events-none select-none"
+          className="absolute inset-x-0 flex flex-col items-center justify-center pointer-events-none select-none px-4"
           style={{
             zIndex: 1,
-            top: isMobile ? '12%' : '18%',
+            top: isMobile ? '10%' : '12.5%',
+            perspective: '1200px',
           }}
         >
+          {/* Subtle editorial micro-tag above the grand watermark */}
+          <div className="flex items-center gap-2 sm:gap-3 mb-1 sm:mb-2 opacity-85">
+            <span className="w-3 sm:w-6 h-[1px] bg-white/60" />
+            <span className="text-[9px] sm:text-[10px] uppercase tracking-[0.24em] sm:tracking-[0.28em] font-mono text-white/95 font-semibold">
+              {mode === 'food' ? 'OKIRO ARTISANAL SERIES' : '3D FIGURINE ATELIER'}
+            </span>
+            <span className="w-3 sm:w-6 h-[1px] bg-white/60" />
+          </div>
+
           <span
             ref={ghostTextRef}
             style={{
               fontFamily: "'Cormorant Garamond', 'Playfair Display', Georgia, serif",
-              fontSize: isMobile ? 'clamp(36px, 11vw, 68px)' : 'clamp(76px, 18vw, 320px)',
+              fontSize: isMobile ? 'clamp(22px, 6vw, 34px)' : 'clamp(32px, 4.2vw, 68px)',
               fontWeight: 700,
-              color: isMobile ? 'rgba(255, 255, 255, 0.16)' : 'rgba(255, 255, 255, 0.22)',
+              color: 'rgba(255, 255, 255, 0.92)',
+              WebkitTextStroke: isMobile
+                ? '0.75px rgba(255, 255, 255, 0.4)'
+                : '1.25px rgba(255, 255, 255, 0.55)',
+              textShadow:
+                '0 8px 24px rgba(0, 0, 0, 0.2), 0 2px 6px rgba(0, 0, 0, 0.12)',
               lineHeight: 1,
-              letterSpacing: isMobile ? '0.08em' : '0.04em',
+              letterSpacing: isMobile ? '0.08em' : '0.09em',
               whiteSpace: 'nowrap',
               willChange: 'transform, opacity, filter',
-              WebkitMaskImage: isMobile
-                ? 'linear-gradient(to bottom, rgba(0,0,0,1) 40%, rgba(0,0,0,0.2) 95%)'
-                : undefined,
-              maskImage: isMobile
-                ? 'linear-gradient(to bottom, rgba(0,0,0,1) 40%, rgba(0,0,0,0.2) 95%)'
-                : undefined,
+              transformStyle: 'preserve-3d',
             }}
-            className="uppercase font-serif"
+            className="uppercase font-serif text-center"
           >
             {activeItem.ghostText}
           </span>
@@ -519,13 +687,18 @@ export const ToonhubFoodHero: React.FC<ToonhubFoodHeroProps> = ({
           style={{ zIndex: 40, maxWidth: isMobile ? 'calc(100% - 1.5rem)' : '380px', willChange: 'transform, opacity' }}
         >
           <div className="bg-black/45 backdrop-blur-xl border border-white/20 p-4 sm:p-6 rounded-2xl sm:rounded-3xl shadow-[0_20px_45px_rgba(0,0,0,0.4)]">
-            <div className="flex items-center gap-2.5 mb-2 sm:mb-3">
-              <span className="inline-flex items-center gap-1.5 text-[10px] sm:text-[11px] uppercase font-bold tracking-[0.2em] text-[#DD643E] bg-[#DD643E]/15 px-2.5 py-0.5 sm:px-3 sm:py-1 rounded-full border border-[#DD643E]/30 backdrop-blur-md shadow-sm">
-                <span className="w-1.5 h-1.5 rounded-full bg-[#DD643E]" />
-                {mode === 'food' ? 'Artisanal Selection' : '3D Figurine Series'}
-              </span>
-              <span className="text-[10px] sm:text-[11px] text-white/70 font-mono tracking-wider">
-                <span className="text-[#DD643E] font-bold">0{activeIndex + 1}</span> / 04
+            <div className="flex items-center justify-between gap-2.5 mb-2 sm:mb-3">
+              <div className="flex items-center gap-2">
+                <span className="inline-flex items-center gap-1.5 text-[10px] sm:text-[11px] uppercase font-bold tracking-[0.2em] text-[#DD643E] bg-[#DD643E]/15 px-2.5 py-0.5 sm:px-3 sm:py-1 rounded-full border border-[#DD643E]/30 backdrop-blur-md shadow-sm">
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#DD643E]" />
+                  {mode === 'food' ? 'Artisanal Selection' : '3D Figurine Series'}
+                </span>
+                <span className="text-[10px] sm:text-[11px] text-white/70 font-mono tracking-wider">
+                  <span className="text-[#DD643E] font-bold">0{activeIndex + 1}</span> / 04
+                </span>
+              </div>
+              <span className="text-[9px] font-mono uppercase tracking-wider text-white/70 sm:hidden">
+                {activeIndex < 3 ? 'Scroll / Swipe ↓' : 'Ready to Scroll ↓'}
               </span>
             </div>
 
@@ -590,7 +763,50 @@ export const ToonhubFoodHero: React.FC<ToonhubFoodHeroProps> = ({
           </div>
         </div>
 
-        {/* 5. Desktop Bottom-right button "DISCOVER IT" with Cormorant Garamond Serif & Burnt Orange Accent */}
+        {/* 5. Center Bottom Pinned-Scroll Step Indicator & Navigation */}
+        <div
+          className="hidden sm:flex absolute bottom-12 left-1/2 -translate-x-1/2 items-center z-40 select-none"
+        >
+          {activeIndex < 3 ? (
+            <div className="flex items-center gap-3 px-4 py-2.5 rounded-full bg-black/45 backdrop-blur-xl border border-white/20 text-white shadow-[0_10px_30px_rgba(0,0,0,0.35)]">
+              <span className="text-[11px] font-mono tracking-widest uppercase font-semibold text-white/90">
+                SCROLL TO EXPLORE (0{activeIndex + 1} / 04)
+              </span>
+              <div className="flex items-center gap-1.5 ml-1">
+                {[0, 1, 2, 3].map((idx) => (
+                  <span
+                    key={idx}
+                    className={`h-1.5 rounded-full transition-all duration-300 ${
+                      idx === activeIndex
+                        ? 'w-4 bg-[#DD643E]'
+                        : idx < activeIndex
+                        ? 'w-1.5 bg-white/80'
+                        : 'w-1.5 bg-white/30'
+                    }`}
+                  />
+                ))}
+              </div>
+              <ChevronDown className="w-4 h-4 text-[#DD643E] animate-bounce ml-0.5" />
+            </div>
+          ) : (
+            <button
+              onClick={() => {
+                const nextSection = document.getElementById('about');
+                if (nextSection) {
+                  nextSection.scrollIntoView({ behavior: 'smooth' });
+                }
+              }}
+              className="group flex items-center gap-2.5 px-5 py-2.5 rounded-full bg-[#DD643E] hover:bg-[#c95430] border border-[#DD643E] text-white shadow-[0_10px_30px_rgba(221,100,62,0.4)] transition-all duration-300 hover:scale-105 cursor-pointer active:scale-95"
+            >
+              <span className="text-[11px] font-mono tracking-widest uppercase font-bold text-white">
+                ALL 4 EXPLORED • SCROLL DOWN
+              </span>
+              <ChevronDown className="w-4 h-4 text-white transition-transform duration-300 group-hover:translate-y-0.5 animate-bounce" />
+            </button>
+          )}
+        </div>
+
+        {/* 6. Desktop Bottom-right button "DISCOVER IT" with Cormorant Garamond Serif & Burnt Orange Accent */}
         <div
           className="hidden sm:block absolute bottom-12 right-10 lg:right-16"
           style={{ zIndex: 40 }}
