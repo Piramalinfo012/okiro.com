@@ -1,0 +1,124 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --color-cream: #F9F1DA;
+    --color-orange: #DD643E;
+    --color-charcoal: #171513;
+    --color-beige: #EDE4D2;
+    --color-white: #FFFDF8;
+    --font-serif: 'Cormorant Garamond', 'Playfair Display', serif;
+    --font-display: 'Playfair Display', 'Cormorant Garamond', serif;
+    --font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  }
+
+  body {
+    background-color: #F9F1DA;
+    color: #171513;
+    font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+    overflow-x: hidden;
+  }
+
+  h1, h2, h3, .font-serif-luxury {
+    font-family: 'Cormorant Garamond', 'Playfair Display', Georgia, serif;
+  }
+
+  .font-display-luxury {
+    font-family: 'Playfair Display', 'Cormorant Garamond', Georgia, serif;
+  }
+}
+
+/* Subtle luxury grain effect */
+.bg-grain {
+  background-image: radial-gradient(rgba(23, 21, 19, 0.05) 1px, transparent 0);
+  background-size: 24px 24px;
+}
+
+.bg-grain-dark {
+  background-image: radial-gradient(rgba(249, 241, 218, 0.04) 1px, transparent 0);
+  background-size: 24px 24px;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #F9F1DA;
+}
+::-webkit-scrollbar-thumb {
+  background: #EDE4D2;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #DD643E;
+}
+
+/* Hide scrollbar for clean horizontal scrolling */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* 3D Perspective & Transform Utilities */
+.preserve-3d, [transform-style="preserve-3d"] {
+  transform-style: preserve-3d;
+}
+.backface-hidden, [backface-visibility="hidden"] {
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+.perspective-1000 {
+  perspective: 1000px;
+}
+.perspective-1200 {
+  perspective: 1200px;
+}
+
+/* Tailwind-style 3D Rotation Utilities */
+:root {
+  --tw-rotate-x: 0deg;
+  --tw-rotate-y: 0deg;
+}
+
+.rotate-y-12 {
+  --tw-rotate-y: 12deg;
+  transform: rotateX(var(--tw-rotate-x, 0deg)) rotateY(var(--tw-rotate-y, 12deg));
+}
+.-rotate-y-12 {
+  --tw-rotate-y: -12deg;
+  transform: rotateX(var(--tw-rotate-x, 0deg)) rotateY(var(--tw-rotate-y, -12deg));
+}
+.rotate-x-6 {
+  --tw-rotate-x: 6deg;
+  transform: rotateX(var(--tw-rotate-x, 6deg)) rotateY(var(--tw-rotate-y, 0deg));
+}
+.-rotate-x-6 {
+  --tw-rotate-x: -6deg;
+  transform: rotateX(var(--tw-rotate-x, -6deg)) rotateY(var(--tw-rotate-y, 0deg));
+}
+
+.hover\:rotate-y-12:hover {
+  --tw-rotate-y: 12deg;
+  transform: rotateX(var(--tw-rotate-x, 0deg)) rotateY(12deg);
+}
+.hover\:rotate-x-6:hover {
+  --tw-rotate-x: 6deg;
+  transform: rotateX(6deg) rotateY(var(--tw-rotate-y, 0deg));
+}
+.hover\:rotate-y-12.hover\:rotate-x-6:hover {
+  transform: rotateX(6deg) rotateY(12deg);
+}
+
+.group:hover .group-hover\:rotate-y-12 {
+  transform: rotateY(12deg);
+}
+.group:hover .group-hover\:rotate-x-6 {
+  transform: rotateX(6deg);
+}
+.group:hover .group-hover\:rotate-y-12.group-hover\:rotate-x-6 {
+  transform: rotateX(6deg) rotateY(12deg);
+}
+

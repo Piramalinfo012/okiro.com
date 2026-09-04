@@ -1,0 +1,6 @@
+{
+  "name": "Okiro Coffee Roasters",
+  "description": "Discover Okiro Coffee Roasters in Raipur — specialty coffee, crafted drinks, food and a beautiful space to slow down.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

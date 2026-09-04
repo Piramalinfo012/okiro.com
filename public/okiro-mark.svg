@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 190" width="160" height="190">
+  <defs>
+    <mask id="okiro-mask">
+      <rect width="160" height="190" fill="white" />
+      <rect x="46" y="46" width="68" height="98" rx="22" ry="22" fill="black" />
+    </mask>
+  </defs>
+  <!-- Outer Rounded Stadium / Squircle in Okiro Burnt Orange -->
+  <rect x="15" y="15" width="130" height="160" rx="46" ry="46" fill="#DE623E" mask="url(#okiro-mask)" />
+  <!-- Center Rising Sun Semi-Circle in Okiro Burnt Orange -->
+  <path d="M 58 96 A 22 22 0 0 1 102 96 Z" fill="#DE623E" />
+</svg>

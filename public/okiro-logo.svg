@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+  <!-- Warm Cream Background matching uploaded asset -->
+  <rect width="200" height="200" fill="#F8F3E5" />
+  <defs>
+    <mask id="okiro-mask-sq">
+      <rect width="200" height="200" fill="white" />
+      <rect x="66" y="51" width="68" height="98" rx="22" ry="22" fill="black" />
+    </mask>
+  </defs>
+  <!-- Outer Okiro Squircle in Burnt Orange -->
+  <rect x="35" y="20" width="130" height="160" rx="46" ry="46" fill="#DE623E" mask="url(#okiro-mask-sq)" />
+  <!-- Center Semi-Circle Rising Sun -->
+  <path d="M 78 101 A 22 22 0 0 1 122 101 Z" fill="#DE623E" />
+</svg>
