@@ -145,22 +145,22 @@ export const ToonhubFoodHero: React.FC<ToonhubFoodHeroProps> = ({
         );
       }
 
-      // 3. Crisp 3D Watermark text entrance with spatial depth & perspective
+      // 3. Crisp 3D Watermark text entrance on the right side
       if (ghostTextRef.current) {
         gsap.fromTo(
           ghostTextRef.current,
           {
             opacity: 0,
-            y: 28,
-            rotationX: 28,
-            z: -70,
+            x: 32,
+            rotationY: -10,
+            z: -30,
             scale: 0.94,
             filter: 'blur(4px)',
           },
           {
-            opacity: isMobile ? 0.9 : 0.95,
-            y: 0,
-            rotationX: 0,
+            opacity: isMobile ? 0.92 : 0.96,
+            x: 0,
+            rotationY: 0,
             z: 0,
             scale: 1,
             filter: 'blur(0px)',
@@ -392,58 +392,65 @@ export const ToonhubFoodHero: React.FC<ToonhubFoodHeroProps> = ({
     return { center, left, right, back };
   }, [activeIndex]);
 
-  // Exact per-role style mapping as specified with 3D rotation
+  // Exact per-role style mapping with balanced 3D rotation and CENTERED positioning
   const getRoleStyle = (index: number) => {
     const isCenter = roles.center === index;
     const isLeft = roles.left === index;
     const isRight = roles.right === index;
-    const isBack = roles.back === index;
 
     if (isCenter) {
       return {
-        transform: `translateX(-50%) rotateY(0deg) scale(${isMobile ? 1.05 : 1.68}) translateZ(30px)`,
+        transform: 'translate(-50%, -50%) rotateY(0deg) scale(1) translateZ(40px)',
         filter: 'blur(0px)',
         opacity: 1,
-        zIndex: 20,
+        zIndex: 25,
         left: '50%',
-        height: isMobile ? '46%' : '92%',
-        bottom: isMobile ? '28%' : 0,
+        top: isMobile ? '44%' : '48%',
+        width: isMobile ? 'min(82vw, 360px)' : 'clamp(360px, 42vw, 540px)',
+        height: isMobile ? 'min(82vw, 360px)' : 'clamp(360px, 42vw, 540px)',
+        bottom: 'auto',
       };
     }
 
     if (isLeft) {
       return {
-        transform: 'translateX(-50%) rotateY(22deg) scale(1) translateZ(-15px)',
-        filter: 'blur(2px)',
-        opacity: 0.85,
+        transform: 'translate(-50%, -50%) rotateY(24deg) scale(0.68) translateZ(-35px)',
+        filter: 'blur(2.5px)',
+        opacity: 0.72,
         zIndex: 10,
-        left: isMobile ? '12%' : '30%',
-        height: isMobile ? '13%' : '28%',
-        bottom: isMobile ? '38%' : '12%',
+        left: isMobile ? '10%' : '18%',
+        top: isMobile ? '44%' : '48%',
+        width: isMobile ? '28vw' : 'clamp(150px, 18vw, 220px)',
+        height: isMobile ? '28vw' : 'clamp(150px, 18vw, 220px)',
+        bottom: 'auto',
       };
     }
 
     if (isRight) {
       return {
-        transform: 'translateX(-50%) rotateY(-22deg) scale(1) translateZ(-15px)',
-        filter: 'blur(2px)',
-        opacity: 0.85,
+        transform: 'translate(-50%, -50%) rotateY(-24deg) scale(0.68) translateZ(-35px)',
+        filter: 'blur(2.5px)',
+        opacity: 0.72,
         zIndex: 10,
-        left: isMobile ? '88%' : '70%',
-        height: isMobile ? '13%' : '28%',
-        bottom: isMobile ? '38%' : '12%',
+        left: isMobile ? '90%' : '82%',
+        top: isMobile ? '44%' : '48%',
+        width: isMobile ? '28vw' : 'clamp(150px, 18vw, 220px)',
+        height: isMobile ? '28vw' : 'clamp(150px, 18vw, 220px)',
+        bottom: 'auto',
       };
     }
 
     // isBack
     return {
-      transform: 'translateX(-50%) rotateY(0deg) scale(1) translateZ(-50px)',
-      filter: 'blur(4px)',
-      opacity: 1,
+      transform: 'translate(-50%, -50%) rotateY(0deg) scale(0.46) translateZ(-80px)',
+      filter: 'blur(5px)',
+      opacity: 0.35,
       zIndex: 5,
       left: '50%',
-      height: isMobile ? '10%' : '22%',
-      bottom: isMobile ? '42%' : '12%',
+      top: isMobile ? '44%' : '48%',
+      width: isMobile ? '20vw' : 'clamp(110px, 13vw, 160px)',
+      height: isMobile ? '20vw' : 'clamp(110px, 13vw, 160px)',
+      bottom: 'auto',
     };
   };
 
@@ -553,43 +560,43 @@ export const ToonhubFoodHero: React.FC<ToonhubFoodHeroProps> = ({
           }}
         />
 
-        {/* 2. Hero Background Editorial 3D Watermark ("CRAFT FOOD", "ORGANIC", etc.) */}
+        {/* 2. Hero Background Editorial Watermark ("CRAFT FOOD", "HERITAGE", etc.) positioned on the RIGHT SIDE */}
         <div
-          className="absolute inset-x-0 flex flex-col items-center justify-center pointer-events-none select-none px-4"
+          className="absolute right-4 sm:right-10 lg:right-16 flex flex-col items-end pointer-events-none select-none"
           style={{
-            zIndex: 1,
-            top: isMobile ? '10%' : '12.5%',
+            zIndex: 15,
+            top: isMobile ? '12%' : '16%',
             perspective: '1200px',
+            maxWidth: 'min(90vw, 550px)',
           }}
         >
           {/* Subtle editorial micro-tag above the grand watermark */}
-          <div className="flex items-center gap-2 sm:gap-3 mb-1 sm:mb-2 opacity-85">
-            <span className="w-3 sm:w-6 h-[1px] bg-white/60" />
+          <div className="flex items-center gap-2 sm:gap-3 mb-1 sm:mb-2 opacity-90">
+            <span className="w-3 sm:w-6 h-[1px] bg-white/70" />
             <span className="text-[9px] sm:text-[10px] uppercase tracking-[0.24em] sm:tracking-[0.28em] font-mono text-white/95 font-semibold">
               {mode === 'food' ? 'OKIRO ARTISANAL SERIES' : '3D FIGURINE ATELIER'}
             </span>
-            <span className="w-3 sm:w-6 h-[1px] bg-white/60" />
           </div>
 
           <span
             ref={ghostTextRef}
             style={{
               fontFamily: "'Cormorant Garamond', 'Playfair Display', Georgia, serif",
-              fontSize: isMobile ? 'clamp(22px, 6vw, 34px)' : 'clamp(32px, 4.2vw, 68px)',
+              fontSize: isMobile ? 'clamp(26px, 6.5vw, 38px)' : 'clamp(38px, 4.6vw, 76px)',
               fontWeight: 700,
-              color: 'rgba(255, 255, 255, 0.92)',
+              color: 'rgba(255, 255, 255, 0.95)',
               WebkitTextStroke: isMobile
                 ? '0.75px rgba(255, 255, 255, 0.4)'
                 : '1.25px rgba(255, 255, 255, 0.55)',
               textShadow:
-                '0 8px 24px rgba(0, 0, 0, 0.2), 0 2px 6px rgba(0, 0, 0, 0.12)',
+                '0 8px 26px rgba(0, 0, 0, 0.25), 0 2px 6px rgba(0, 0, 0, 0.15)',
               lineHeight: 1,
-              letterSpacing: isMobile ? '0.08em' : '0.09em',
+              letterSpacing: isMobile ? '0.06em' : '0.08em',
               whiteSpace: 'nowrap',
               willChange: 'transform, opacity, filter',
               transformStyle: 'preserve-3d',
             }}
-            className="uppercase font-serif text-center"
+            className="uppercase font-serif text-right"
           >
             {activeItem.ghostText}
           </span>
@@ -610,10 +617,10 @@ export const ToonhubFoodHero: React.FC<ToonhubFoodHeroProps> = ({
                 key={`${mode}-${index}`}
                 style={{
                   position: 'absolute',
-                  aspectRatio: '0.6 / 1',
+                  aspectRatio: '1 / 1',
                   willChange: 'transform, filter, opacity',
                   transition:
-                    'transform 650ms cubic-bezier(0.4, 0, 0.2, 1), filter 650ms cubic-bezier(0.4, 0, 0.2, 1), opacity 650ms cubic-bezier(0.4, 0, 0.2, 1), left 650ms cubic-bezier(0.4, 0, 0.2, 1)',
+                    'transform 650ms cubic-bezier(0.4, 0, 0.2, 1), filter 650ms cubic-bezier(0.4, 0, 0.2, 1), opacity 650ms cubic-bezier(0.4, 0, 0.2, 1), left 650ms cubic-bezier(0.4, 0, 0.2, 1), top 650ms cubic-bezier(0.4, 0, 0.2, 1)',
                   transformStyle: 'preserve-3d',
                   ...style,
                 }}
@@ -623,8 +630,8 @@ export const ToonhubFoodHero: React.FC<ToonhubFoodHeroProps> = ({
                   if (roles.right === index) navigate('next');
                 }}
               >
-                <div className="relative w-full h-full flex items-end justify-center pointer-events-none select-none">
-                  {/* Base Cutout Carousel Image */}
+                <div className="relative w-full h-full flex items-center justify-center pointer-events-none select-none">
+                  {/* Base Cutout Carousel Image - Centered and uncropped */}
                   <img
                     src={item.src}
                     alt={item.title}
@@ -632,7 +639,7 @@ export const ToonhubFoodHero: React.FC<ToonhubFoodHeroProps> = ({
                     className="w-full h-full select-none drop-shadow-[0_20px_35px_rgba(0,0,0,0.35)]"
                     style={{
                       objectFit: 'contain',
-                      objectPosition: 'bottom center',
+                      objectPosition: 'center center',
                       willChange: 'transform, opacity',
                     }}
                   />
@@ -648,8 +655,8 @@ export const ToonhubFoodHero: React.FC<ToonhubFoodHeroProps> = ({
                       maskImage: `url(${item.src})`,
                       WebkitMaskRepeat: 'no-repeat',
                       maskRepeat: 'no-repeat',
-                      WebkitMaskPosition: 'bottom center',
-                      maskPosition: 'bottom center',
+                      WebkitMaskPosition: 'center center',
+                      maskPosition: 'center center',
                       WebkitMaskSize: 'contain',
                       maskSize: 'contain',
                       willChange: 'background, opacity',
@@ -667,8 +674,8 @@ export const ToonhubFoodHero: React.FC<ToonhubFoodHeroProps> = ({
                       maskImage: `url(${item.src})`,
                       WebkitMaskRepeat: 'no-repeat',
                       maskRepeat: 'no-repeat',
-                      WebkitMaskPosition: 'bottom center',
-                      maskPosition: 'bottom center',
+                      WebkitMaskPosition: 'center center',
+                      maskPosition: 'center center',
                       WebkitMaskSize: 'contain',
                       maskSize: 'contain',
                       willChange: 'background, opacity',
