@@ -33,7 +33,7 @@ export const InstagramGrid: React.FC = () => {
             href={OKIRO_INFO.instagram}
             target="_blank"
             rel="noopener noreferrer"
-            className="group inline-flex items-center gap-2.5 px-6 py-3 bg-[#171513] text-[#F9F1DA] hover:bg-[#DD643E] hover:text-white transition-all text-xs uppercase tracking-[0.22em] font-medium w-fit"
+            className="group inline-flex items-center gap-2.5 px-6 py-3 bg-[#171513] text-[#F9F1DA] hover:bg-[#DD643E] hover:text-white transition-all text-xs uppercase tracking-[0.22em] font-medium w-fit shadow-md"
           >
             <span>Follow on Instagram</span>
             <ArrowUpRight className="w-3.5 h-3.5 opacity-80 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
@@ -52,7 +52,7 @@ export const InstagramGrid: React.FC = () => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: '-50px' }}
               transition={{ duration: 0.6, delay: idx * 0.08 }}
-              className={`group relative overflow-hidden bg-[#EDE4D2] cursor-pointer block ${
+              className={`group relative overflow-hidden bg-[#EDE4D2] cursor-pointer block rounded-2xl shadow-sm border border-[#EDE4D2] ${
                 idx === 1 || idx === 4 ? 'aspect-[4/5]' : 'aspect-square'
               }`}
             >
@@ -64,7 +64,7 @@ export const InstagramGrid: React.FC = () => {
               />
 
               {/* Hover Overlay with Real-Feel Feed Caption */}
-              <div className="absolute inset-0 bg-[#171513]/70 opacity-0 group-hover:opacity-100 transition-opacity duration-300 p-5 sm:p-6 flex flex-col justify-between text-[#FFFDF8]">
+              <div className="absolute inset-0 bg-[#171513]/75 opacity-0 group-hover:opacity-100 transition-opacity duration-300 p-5 sm:p-6 flex flex-col justify-between text-[#FFFDF8]">
                 <div className="flex items-center justify-between">
                   <span className="text-[10px] uppercase tracking-[0.25em] text-[#DD643E] font-medium">
                     {post.tag}
@@ -91,3 +91,4 @@ export const InstagramGrid: React.FC = () => {
     </section>
   );
 };
+

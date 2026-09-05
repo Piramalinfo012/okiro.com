@@ -1,21 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Menu, X, ArrowUpRight, Clock, MapPin, Phone, Utensils, Sparkles } from 'lucide-react';
+import { Menu, X, ArrowUpRight, Clock, MapPin } from 'lucide-react';
 import { OkiroLogo } from './OkiroLogo';
 import { OKIRO_INFO } from '../data/okiroData';
 
 interface HeaderProps {
   onOpenReservation?: () => void;
   onOpenMenuModal?: () => void;
-  heroMode?: 'food' | 'figurines';
-  onToggleHeroMode?: () => void;
 }
 
 export const Header: React.FC<HeaderProps> = ({
   onOpenReservation,
   onOpenMenuModal,
-  heroMode = 'food',
-  onToggleHeroMode,
 }) => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -96,32 +92,8 @@ export const Header: React.FC<HeaderProps> = ({
             ))}
           </nav>
 
-          {/* Right Action: Mode Toggle, Visit Us Button & Mobile Menu Toggle */}
+          {/* Right Action: Visit Us Button & Mobile Menu Toggle */}
           <div className="flex items-center gap-2.5 sm:gap-3.5">
-            {onToggleHeroMode && (
-              <button
-                onClick={onToggleHeroMode}
-                className={`inline-flex items-center gap-1.5 px-3 py-1.5 sm:px-4 sm:py-2 text-[10px] sm:text-[11px] uppercase tracking-[0.16em] font-medium transition-all duration-300 rounded-full border shadow-sm ${
-                  isScrolled
-                    ? 'bg-white text-[#171513] border-[#EDE4D2] hover:border-[#DD643E]'
-                    : 'bg-black/30 backdrop-blur-md text-white border-white/30 hover:bg-black/45'
-                }`}
-                title="Toggle between Food and 3D Figurines collection"
-              >
-                {heroMode === 'food' ? (
-                  <>
-                    <Utensils className="w-3 h-3 text-[#DE623E]" />
-                    <span>Food Edition</span>
-                  </>
-                ) : (
-                  <>
-                    <Sparkles className="w-3 h-3 text-[#DE623E]" />
-                    <span>3D Edition</span>
-                  </>
-                )}
-              </button>
-            )}
-
             <button
               onClick={() => {
                 const target = document.querySelector('#visit');

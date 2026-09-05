@@ -15,6 +15,7 @@ import { MenuSection } from './components/MenuSection';
 import { CoffeeSection } from './components/CoffeeSection';
 import { SpaceSection } from './components/SpaceSection';
 import { InstagramGrid } from './components/InstagramGrid';
+import { InstagramReelsShowcase } from './components/InstagramReelsShowcase';
 import { Reviews } from './components/Reviews';
 import { VisitSection } from './components/VisitSection';
 import { ContactCTA } from './components/ContactCTA';
@@ -26,7 +27,6 @@ import { MobileBottomNav } from './components/MobileBottomNav';
 export default function App() {
   const [isMenuModalOpen, setIsMenuModalOpen] = useState(false);
   const [isReservationOpen, setIsReservationOpen] = useState(false);
-  const [heroMode, setHeroMode] = useState<'food' | 'figurines'>('food');
 
   return (
     <div className="relative min-h-screen bg-[#F9F1DA] text-[#171513] font-sans antialiased selection:bg-[#DD643E] selection:text-[#FFFDF8]">
@@ -40,17 +40,14 @@ export default function App() {
       <Header
         onOpenReservation={() => setIsReservationOpen(true)}
         onOpenMenuModal={() => setIsMenuModalOpen(true)}
-        heroMode={heroMode}
-        onToggleHeroMode={() => setHeroMode((prev) => (prev === 'food' ? 'figurines' : 'food'))}
       />
 
       {/* Main Content Sections */}
       <main>
-        {/* Full-Viewport 3D Food & Figurine Hero Carousel as requested */}
+        {/* Full-Viewport Food Hero Carousel */}
         <section id="hero" className="w-full">
           <ToonhubFoodHero
-            mode={heroMode}
-            onToggleMode={() => setHeroMode((prev) => (prev === 'food' ? 'figurines' : 'food'))}
+            mode="food"
             onExploreClick={() => setIsMenuModalOpen(true)}
             onOpenReservation={() => setIsReservationOpen(true)}
           />
@@ -73,6 +70,9 @@ export default function App() {
 
         {/* Section 7: Instagram Feed Grid */}
         <InstagramGrid />
+
+        {/* Section 7B: 3D Autoplaying Reels Cinema & Slide-in Showcase */}
+        <InstagramReelsShowcase />
 
         {/* Section 8: Reviews / Social Proof */}
         <Reviews />
